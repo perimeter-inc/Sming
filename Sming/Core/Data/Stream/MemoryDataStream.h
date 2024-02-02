@@ -12,6 +12,7 @@
 
 #include "ReadWriteStream.h"
 #include <WString.h>
+#include <debug_progmem.h>
 
 /**
  * @brief Read/write stream using expandable memory buffer
@@ -26,6 +27,8 @@
 class MemoryDataStream : public ReadWriteStream
 {
 public:
+	static uint16_t jean_counter;
+
 	MemoryDataStream(size_t maxCapacity = UINT16_MAX) : maxCapacity(maxCapacity)
 	{
 	}
@@ -37,7 +40,7 @@ public:
 
 	~MemoryDataStream()
 	{
-		free(buffer);
+		// free(buffer);
 	}
 
 	StreamType getStreamType() const override
@@ -115,9 +118,9 @@ public:
 	}
 
 private:
-	char* buffer = nullptr;			///< Stream content stored here
+	char buffer[20000];				///< Stream content stored here
 	size_t maxCapacity{UINT16_MAX}; ///< Limit size of stream
 	size_t readPos = 0;				///< Offset to current read position
 	size_t size = 0;				///< Number of bytes stored in stream (i.e. the write position)
-	size_t capacity = 0;			///< Number of bytes allocated in buffer
+	size_t capacity = 20000;		///< Number of bytes allocated in buffer
 };

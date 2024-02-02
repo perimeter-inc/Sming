@@ -13,35 +13,44 @@
 
 MemoryDataStream::MemoryDataStream(String&& string) noexcept
 {
-	auto buf = string.getBuffer();
-	buffer = buf.data;
-	size = buf.length;
-	capacity = buf.size;
+	// auto buf = string.getBuffer();
+	// // buffer = buf.data;
+	// size = buf.length;
+	// capacity = buf.size;
 }
 
 bool MemoryDataStream::ensureCapacity(size_t minCapacity)
 {
-	if(capacity < minCapacity) {
-		if(minCapacity > maxCapacity) {
-			debug_e("MemoryDataStream too large, requested %u limit is %u", minCapacity, maxCapacity);
-			return false;
-		}
-		size_t newCapacity = minCapacity;
-		if(capacity != 0) {
-			// If expanding stream, increase buffer capacity in anticipation of further writes
-			newCapacity += (minCapacity < 256) ? 128 : 64;
-		}
-		debug_d("MemoryDataStream::realloc %u -> %u", capacity, newCapacity);
-		// realloc can fail, store the result in temporary pointer
-		auto newBuffer = (char*)realloc(buffer, newCapacity);
-		if(newBuffer == nullptr) {
-			debug_e("MemoryDataStream realloc(%u) failed", newCapacity);
-			return false;
-		}
+	// static uint8_t fluffer[20000];
 
-		buffer = newBuffer;
-		capacity = newCapacity;
+	if(minCapacity > 20000) {
+		capacity = 20000;
+
+		debug_e("Fluffer failed");
+
+		return false;
 	}
+
+	// if(capacity < minCapacity) {
+	// if(minCapacity > maxCapacity) {
+	// 	debug_e("MemoryDataStream too large, requested %u limit is %u", minCapacity, maxCapacity);
+	// 	return false;
+	// }
+	// size_t newCapacity = minCapacity;
+	// if(capacity != 0) {
+	// 	// If expanding stream, increase buffer capacity in anticipation of further writes
+	// 	newCapacity += (minCapacity < 256) ? 128 : 64;
+	// }
+	// debug_d("MemoryDataStream::realloc %u -> %u", capacity, newCapacity);
+	// // realloc can fail, store the result in temporary pointer
+	// auto newBuffer = (char*)realloc(buffer, newCapacity);
+	// if(newBuffer == nullptr) {
+	// 	debug_e("MemoryDataStream realloc(%u) failed", newCapacity);
+	// 	return false;
+	// }
+
+	// buffer = fluffer;
+	// }
 
 	return true;
 }
@@ -56,7 +65,10 @@ size_t MemoryDataStream::write(const uint8_t* data, size_t len)
 
 	// If reallocation fails, write as much as possible in any remaining space
 	if(!ensureCapacity(size + len)) {
-		len = capacity - size;
+		// len = capacity - size;
+		len = 0;
+
+		return len;
 	}
 
 	memcpy(buffer + size, data, len);
@@ -107,7 +119,7 @@ bool MemoryDataStream::moveString(String& s)
 	(void)res;
 	assert(res);
 
-	buffer = nullptr;
+	// buffer = nullptr;
 	readPos = 0;
 	size = 0;
 	capacity = 0;

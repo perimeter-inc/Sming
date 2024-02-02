@@ -21,7 +21,7 @@
 
 #define NETWORK_DEBUG
 
-#define NETWORK_SEND_BUFFER_SIZE 1024
+#define NETWORK_SEND_BUFFER_SIZE 3000
 
 enum TcpConnectionEvent {
 	eTCE_Connected = 0, ///< Occurs after connection establishment

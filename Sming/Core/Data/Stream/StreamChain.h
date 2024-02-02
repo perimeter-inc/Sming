@@ -44,6 +44,8 @@ public:
 			return false;
 		}
 
+		debug_e("Athur's Queue size: %d", queue.count());
+
 		return queue.enqueue(stream);
 	}
 
